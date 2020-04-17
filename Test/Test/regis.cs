@@ -1,0 +1,40 @@
+﻿using MySql.Data.MySqlClient;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+
+namespace Test
+{
+    public partial class regis : Form
+    {
+        public regis()
+        {
+            InitializeComponent();
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            string sql = "SELECT * FROM customers";
+            sql = "INSERT INTO customers(CustomerName,Gender,CustomerType,CustomerTelno) VALUES('" + textBox1.Text + "','" + comboBox1.Text + "','" + comboBox2.Text + "','" + textBox2.Text + "')";
+            MySqlConnection con = new MySqlConnection("host=localhost;user=termproject;password=12345678;database=termproject");
+            MySqlCommand cmd = new MySqlCommand(sql, con);
+            con.Open();
+            cmd.ExecuteNonQuery();
+
+            MessageBox.Show("ลงทะเบียนเรียบร้อย");
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            this.Hide();
+            Form1 F1 = new Form1();
+            F1.ShowDialog();
+        }
+    }
+}
