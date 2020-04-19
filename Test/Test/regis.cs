@@ -26,7 +26,7 @@ namespace Test
             MySqlCommand cmd = new MySqlCommand(sql, con);
             con.Open();
             cmd.ExecuteNonQuery();
-
+            con.Close();
             MessageBox.Show("ลงทะเบียนเรียบร้อย");
         }
 

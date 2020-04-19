@@ -18,3 +18,4 @@ C:\Users\PhumNT\Desktop\Project\Test\Test\obj\Debug\Test.exe
 C:\Users\PhumNT\Desktop\Project\Test\Test\obj\Debug\Test.pdb
 C:\Users\PhumNT\Desktop\Project\Test\Test\obj\Debug\Test.regis.resources
 C:\Users\PhumNT\Desktop\Project\Test\Test\obj\Debug\Test.buy.resources
+C:\Users\PhumNT\Desktop\Project\Test\Test\obj\Debug\Test.staff.resources

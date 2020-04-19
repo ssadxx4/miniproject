@@ -69,6 +69,7 @@ namespace Test
                 this.Hide();
                 buy b = new buy();
                 b.ShowDialog();
+                con.Close();
                 //MessageBox.Show("dasd");
             }
             else
@@ -87,7 +88,10 @@ namespace Test
             MySqlDataReader reader = cmd.ExecuteReader();
             if (reader.Read())
             {
-                MessageBox.Show("dasd");
+                this.Hide();
+                staff st = new staff();
+                st.ShowDialog();
+                //MessageBox.Show("dasd");
                 con.Close();
             }
             else
