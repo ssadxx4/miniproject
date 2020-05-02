@@ -20,8 +20,8 @@ namespace Test
 
         private void button1_Click(object sender, EventArgs e)
         {
-            string sql = "SELECT * FROM customers";
-            sql = "INSERT INTO customers(CustomerName,Gender,CustomerType,CustomerTelno) VALUES('" + textBox1.Text + "','" + comboBox1.Text + "','" + comboBox2.Text + "','" + textBox2.Text + "')";
+            string sql = "SELECT * FROM customer";
+            sql = "INSERT INTO customer(CustomerName,CustomerTelno) VALUES('" + textBox1.Text + "','" + textBox2.Text + "')";
             MySqlConnection con = new MySqlConnection("host=localhost;user=termproject;password=12345678;database=termproject");
             MySqlCommand cmd = new MySqlCommand(sql, con);
             con.Open();

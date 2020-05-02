@@ -58,7 +58,7 @@ namespace Test
 
         private void button4_Click(object sender, EventArgs e)
         {
-            string sl = "SELECT * FROM customers WHERE CustomerName ='" + textBox1.Text + "'AND CustomerTelno ='" + textBox2.Text + "'";
+            string sl = "SELECT * FROM customer WHERE CustomerName ='" + textBox1.Text + "'AND CustomerTelno ='" + textBox2.Text + "'";
             MySqlConnection con = new MySqlConnection("host=localhost;user=termproject;password=12345678;database=termproject");
             MySqlCommand cmd = new MySqlCommand(sl, con);
             con.Open();
@@ -67,14 +67,14 @@ namespace Test
             if (reader.Read())
             {
                 this.Hide();
-                buy b = new buy();
+                buy b = new buy(textBox1.Text,textBox2.Text);
                 b.ShowDialog();
-                con.Close();
                 //MessageBox.Show("dasd");
+                con.Close();
             }
             else
             {
-                MessageBox.Show("ชื่อผู้ใช้งานหรือรหัสผ่านไม่ถูกต้อง");
+                MessageBox.Show("กรุณาตรวจสอบข้อมูลให้ถูกต้อง");
             }
         }
 
@@ -96,7 +96,7 @@ namespace Test
             }
             else
             {
-                MessageBox.Show("sssssss");
+                MessageBox.Show("กรุณาตรวจสอบข้อมูลให้ถูกต้อง");
             }
         }
 

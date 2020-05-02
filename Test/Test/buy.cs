@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MySql.Data.MySqlClient;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -12,9 +13,25 @@ namespace Test
 {
     public partial class buy : Form
     {
-        public buy()
+        public buy(string name,string tel)
         {
             InitializeComponent();
+            label8.Text = "Welcome " + name;
+            label9.Text = tel + "";
+            label9.Hide();
+            label10.Hide();
+            string sql = "SELECT * FROM customer WHERE CustomerName ='" + name + "'AND CustomerTelno = '" + tel+ "'";
+            MySqlConnection con = new MySqlConnection("host=localhost;user=termproject;password=12345678;database=termproject");
+            MySqlCommand cmd = new MySqlCommand(sql, con);
+            con.Open();
+            MySqlDataReader reader = cmd.ExecuteReader();
+            if (reader.Read())
+            {
+                label10.Text = "" + reader.GetString("CustomerID");
+            }
+            con.Close();
+            
+
         }
 
         private void dateTimePicker1_ValueChanged(object sender, EventArgs e)
@@ -29,12 +46,13 @@ namespace Test
             {
                 if (textBox1.Text.Length != 0)
                 {
-                    label3.Text = (int.Parse(textBox1.Text) * 10 + "");
-                    label8.Text = (int.Parse(textBox1.Text) * 10 + "");
+                    label3.Text = (int.Parse(textBox1.Text) * 50 + "");
+                    label12.Text = ("" + (int.Parse(label3.Text) + int.Parse(label4.Text) + int.Parse(label5.Text) + int.Parse(label6.Text) + int.Parse(label7.Text)));
                 }
                 else
                 {
                     label3.Text = "0";
+                    label12.Text = ("" + (int.Parse(label3.Text) + int.Parse(label4.Text) + int.Parse(label5.Text) + int.Parse(label6.Text) + int.Parse(label7.Text)));
                 }
 
             }
@@ -43,11 +61,13 @@ namespace Test
             {
                 if (textBox1.Text.Length != 0)
                 {
-                    label3.Text = (int.Parse(textBox1.Text) * 100 + "");
+                    label3.Text = (int.Parse(textBox1.Text) * 65 + "");
+                    label12.Text = ("" + (int.Parse(label3.Text) + int.Parse(label4.Text) + int.Parse(label5.Text) + int.Parse(label6.Text) + int.Parse(label7.Text)));
                 }
                 else
                 {
                     label3.Text = "0";
+                    label12.Text = ("" + (int.Parse(label3.Text) + int.Parse(label4.Text) + int.Parse(label5.Text) + int.Parse(label6.Text) + int.Parse(label7.Text)));
                 }
 
             }
@@ -56,11 +76,13 @@ namespace Test
             {
                 if (textBox1.Text.Length != 0)
                 {
-                    label3.Text = (int.Parse(textBox1.Text) * 300 + "");
+                    label3.Text = (int.Parse(textBox1.Text) * 45 + "");
+                    label12.Text = ("" + (int.Parse(label3.Text) + int.Parse(label4.Text) + int.Parse(label5.Text) + int.Parse(label6.Text) + int.Parse(label7.Text)));
                 }
                 else
                 {
                     label3.Text = "0";
+                    label12.Text = ("" + (int.Parse(label3.Text) + int.Parse(label4.Text) + int.Parse(label5.Text) + int.Parse(label6.Text) + int.Parse(label7.Text)));
                 }
 
             }
@@ -69,11 +91,13 @@ namespace Test
             {
                 if (textBox1.Text.Length != 0)
                 {
-                    label3.Text = (int.Parse(textBox1.Text) * 150 + "");
+                    label3.Text = (int.Parse(textBox1.Text) * 40 + "");
+                    label12.Text = ("" + (int.Parse(label3.Text) + int.Parse(label4.Text) + int.Parse(label5.Text) + int.Parse(label6.Text) + int.Parse(label7.Text)));
                 }
                 else
                 {
                     label3.Text = "0";
+                    label12.Text = ("" + (int.Parse(label3.Text) + int.Parse(label4.Text) + int.Parse(label5.Text) + int.Parse(label6.Text) + int.Parse(label7.Text)));
                 }
 
             }
@@ -82,11 +106,13 @@ namespace Test
             {
                 if (textBox1.Text.Length != 0)
                 {
-                    label3.Text = (int.Parse(textBox1.Text) * 50 + "");
+                    label3.Text = (int.Parse(textBox1.Text) * 55 + "");
+                    label12.Text = ("" + (int.Parse(label3.Text) + int.Parse(label4.Text) + int.Parse(label5.Text) + int.Parse(label6.Text) + int.Parse(label7.Text)));
                 }
                 else
                 {
                     label3.Text = "0";
+                    label12.Text = ("" + (int.Parse(label3.Text) + int.Parse(label4.Text) + int.Parse(label5.Text) + int.Parse(label6.Text) + int.Parse(label7.Text)));
                 }
 
             }
@@ -112,6 +138,42 @@ private void textBox6_TextChanged(object sender, EventArgs e)
         private void button1_Click_1(object sender, EventArgs e)
         {
             
+            string sl = "SELECT * FROM customer WHERE CustomerID ='" + label10.Text + "'AND Credit <'" + label12.Text + "'";
+            MySqlConnection con = new MySqlConnection("host=localhost;user=termproject;password=12345678;database=termproject");
+            MySqlCommand cm = new MySqlCommand(sl, con);
+            con.Open();
+            MySqlDataReader reader = cm.ExecuteReader();
+            if (reader.Read())
+            {
+                MessageBox.Show("ยอดเงินไม่เพียงพอ");
+            }
+            else 
+            {
+                string sql = "SELECT * FROM sale";
+                sql = "INSERT INTO sale(SaleDate,CustomerID,GrandTotal) VALUES('" + dateTimePicker1.Text + "','" + label10.Text + "','" + label12.Text + "')";
+                MySqlConnection co = new MySqlConnection("host=localhost;user=termproject;password=12345678;database=termproject");
+                MySqlCommand cmd = new MySqlCommand(sql, co);
+
+                co.Open();
+                cmd.ExecuteNonQuery();
+
+
+                string sqll = "SELECT * FROM customer";
+                sqll = "UPDATE customer SET Credit = Credit-" + label12.Text + " WHERE CustomerID =" + label10.Text + "";
+                MySqlConnection coo = new MySqlConnection("host=localhost;user=termproject;password=12345678;database=termproject");
+                MySqlCommand cmdd = new MySqlCommand(sqll, coo);
+
+                coo.Open();
+                cmdd.ExecuteNonQuery();
+
+
+
+                MessageBox.Show("ซื้อสินค้าเรียบร้อย");
+                co.Close();
+                coo.Close();
+            }
+            
+            con.Close();
 
         }
 
@@ -122,11 +184,13 @@ private void textBox6_TextChanged(object sender, EventArgs e)
             {
                 if (textBox1.Text.Length != 0)
                 {
-                    label3.Text = (int.Parse(textBox1.Text)*10 + "");
+                    label3.Text = (int.Parse(textBox1.Text)*50 + "");
+                    label12.Text = ("" + (int.Parse(label3.Text) + int.Parse(label4.Text) + int.Parse(label5.Text) + int.Parse(label6.Text) + int.Parse(label7.Text)));
                 }
                 else
                 {
                     label3.Text = "0";
+                    label12.Text = ("" + (int.Parse(label3.Text) + int.Parse(label4.Text) + int.Parse(label5.Text) + int.Parse(label6.Text) + int.Parse(label7.Text)));
                 }
                 
             }
@@ -135,11 +199,13 @@ private void textBox6_TextChanged(object sender, EventArgs e)
             {
                 if (textBox1.Text.Length != 0)
                 {
-                    label3.Text = (int.Parse(textBox1.Text) * 100 + "");
+                    label3.Text = (int.Parse(textBox1.Text) * 65 + "");
+                    label12.Text = ("" + (int.Parse(label3.Text) + int.Parse(label4.Text) + int.Parse(label5.Text) + int.Parse(label6.Text) + int.Parse(label7.Text)));
                 }
                 else
                 {
                     label3.Text = "0";
+                    label12.Text = ("" + (int.Parse(label3.Text) + int.Parse(label4.Text) + int.Parse(label5.Text) + int.Parse(label6.Text) + int.Parse(label7.Text)));
                 }
 
             }
@@ -148,11 +214,13 @@ private void textBox6_TextChanged(object sender, EventArgs e)
             {
                 if (textBox1.Text.Length != 0)
                 {
-                    label3.Text = (int.Parse(textBox1.Text) * 300 + "");
+                    label3.Text = (int.Parse(textBox1.Text) * 45 + "");
+                    label12.Text = ("" + (int.Parse(label3.Text) + int.Parse(label4.Text) + int.Parse(label5.Text) + int.Parse(label6.Text) + int.Parse(label7.Text)));
                 }
                 else
                 {
                     label3.Text = "0";
+                    label12.Text = ("" + (int.Parse(label3.Text) + int.Parse(label4.Text) + int.Parse(label5.Text) + int.Parse(label6.Text) + int.Parse(label7.Text)));
                 }
 
             }
@@ -161,11 +229,13 @@ private void textBox6_TextChanged(object sender, EventArgs e)
             {
                 if (textBox1.Text.Length != 0)
                 {
-                    label3.Text = (int.Parse(textBox1.Text) * 150 + "");
+                    label3.Text = (int.Parse(textBox1.Text) * 40 + "");
+                    label12.Text = ("" + (int.Parse(label3.Text) + int.Parse(label4.Text) + int.Parse(label5.Text) + int.Parse(label6.Text) + int.Parse(label7.Text)));
                 }
                 else
                 {
                     label3.Text = "0";
+                    label12.Text = ("" + (int.Parse(label3.Text) + int.Parse(label4.Text) + int.Parse(label5.Text) + int.Parse(label6.Text) + int.Parse(label7.Text)));
                 }
 
             }
@@ -174,11 +244,13 @@ private void textBox6_TextChanged(object sender, EventArgs e)
             {
                 if (textBox1.Text.Length != 0)
                 {
-                    label3.Text = (int.Parse(textBox1.Text) * 50 + "");
+                    label3.Text = (int.Parse(textBox1.Text) * 55 + "");
+                    label12.Text = ("" + (int.Parse(label3.Text) + int.Parse(label4.Text) + int.Parse(label5.Text) + int.Parse(label6.Text) + int.Parse(label7.Text)));
                 }
                 else
                 {
                     label3.Text = "0";
+                    label12.Text = ("" + (int.Parse(label3.Text) + int.Parse(label4.Text) + int.Parse(label5.Text) + int.Parse(label6.Text) + int.Parse(label7.Text)));
                 }
 
             }
@@ -187,11 +259,15 @@ private void textBox6_TextChanged(object sender, EventArgs e)
 
         private void buy_Load(object sender, EventArgs e)
         {
-            label4.Text = "...";
-            label5.Text = "...";
-            label6.Text = "...";
-            label7.Text = "...";
-            label3.Text = "...";
+            
+
+            label3.Text = (0 + "");
+            label4.Text = (0 + "");
+            label5.Text = (0 + "");
+            label6.Text = (0 + "");
+            label7.Text = (0 + "");
+            label12.Text = (0 + "");
+
         }
 
         private void comboBox2_SelectedIndexChanged(object sender, EventArgs e)
@@ -200,12 +276,14 @@ private void textBox6_TextChanged(object sender, EventArgs e)
             {
                 if (textBox2.Text.Length != 0)
                 {
-                    label4.Text = (int.Parse(textBox2.Text) * 10 + "");
-                    
+                    label4.Text = (int.Parse(textBox2.Text) * 50 + "");
+                    label12.Text = ("" + (int.Parse(label3.Text) + int.Parse(label4.Text) + int.Parse(label5.Text) + int.Parse(label6.Text) + int.Parse(label7.Text)));
+
                 }
                 else
                 {
                     label4.Text = "0";
+                    label12.Text = ("" + (int.Parse(label3.Text) + int.Parse(label4.Text) + int.Parse(label5.Text) + int.Parse(label6.Text) + int.Parse(label7.Text)));
                 }
 
             }
@@ -214,11 +292,13 @@ private void textBox6_TextChanged(object sender, EventArgs e)
             {
                 if (textBox2.Text.Length != 0)
                 {
-                    label4.Text = (int.Parse(textBox2.Text) * 100 + "");
+                    label4.Text = (int.Parse(textBox2.Text) * 65 + "");
+                    label12.Text = ("" + (int.Parse(label3.Text) + int.Parse(label4.Text) + int.Parse(label5.Text) + int.Parse(label6.Text) + int.Parse(label7.Text)));
                 }
                 else
                 {
                     label4.Text = "0";
+                    label12.Text = ("" + (int.Parse(label3.Text) + int.Parse(label4.Text) + int.Parse(label5.Text) + int.Parse(label6.Text) + int.Parse(label7.Text)));
                 }
 
 
@@ -228,11 +308,13 @@ private void textBox6_TextChanged(object sender, EventArgs e)
             {
                 if (textBox2.Text.Length != 0)
                 {
-                    label4.Text = (int.Parse(textBox2.Text) * 300 + "");
+                    label4.Text = (int.Parse(textBox2.Text) * 45 + "");
+                    label12.Text = ("" + (int.Parse(label3.Text) + int.Parse(label4.Text) + int.Parse(label5.Text) + int.Parse(label6.Text) + int.Parse(label7.Text)));
                 }
                 else
                 {
                     label4.Text = "0";
+                    label12.Text = ("" + (int.Parse(label3.Text) + int.Parse(label4.Text) + int.Parse(label5.Text) + int.Parse(label6.Text) + int.Parse(label7.Text)));
                 }
 
 
@@ -242,11 +324,13 @@ private void textBox6_TextChanged(object sender, EventArgs e)
             {
                 if (textBox2.Text.Length != 0)
                 {
-                    label4.Text = (int.Parse(textBox2.Text) * 150 + "");
+                    label4.Text = (int.Parse(textBox2.Text) * 40 + "");
+                    label12.Text = ("" + (int.Parse(label3.Text) + int.Parse(label4.Text) + int.Parse(label5.Text) + int.Parse(label6.Text) + int.Parse(label7.Text)));
                 }
                 else
                 {
                     label4.Text = "0";
+                    label12.Text = ("" + (int.Parse(label3.Text) + int.Parse(label4.Text) + int.Parse(label5.Text) + int.Parse(label6.Text) + int.Parse(label7.Text)));
                 }
 
 
@@ -256,11 +340,13 @@ private void textBox6_TextChanged(object sender, EventArgs e)
             {
                 if (textBox2.Text.Length != 0)
                 {
-                    label4.Text = (int.Parse(textBox2.Text) * 50 + "");
+                    label4.Text = (int.Parse(textBox2.Text) * 55 + "");
+                    label12.Text = ("" + (int.Parse(label3.Text) + int.Parse(label4.Text) + int.Parse(label5.Text) + int.Parse(label6.Text) + int.Parse(label7.Text)));
                 }
                 else
                 {
                     label4.Text = "0";
+                    label12.Text = ("" + (int.Parse(label3.Text) + int.Parse(label4.Text) + int.Parse(label5.Text) + int.Parse(label6.Text) + int.Parse(label7.Text)));
                 }
 
 
@@ -273,11 +359,13 @@ private void textBox6_TextChanged(object sender, EventArgs e)
             {
                 if (textBox2.Text.Length != 0)
                 {
-                    label4.Text = (int.Parse(textBox2.Text) * 10 + "");
+                    label4.Text = (int.Parse(textBox2.Text) * 50 + "");
+                    label12.Text = ("" + (int.Parse(label3.Text) + int.Parse(label4.Text) + int.Parse(label5.Text) + int.Parse(label6.Text) + int.Parse(label7.Text)));
                 }
                 else
                 {
                     label4.Text = "0";
+                    label12.Text = ("" + (int.Parse(label3.Text) + int.Parse(label4.Text) + int.Parse(label5.Text) + int.Parse(label6.Text) + int.Parse(label7.Text)));
                 }
 
             }
@@ -286,11 +374,13 @@ private void textBox6_TextChanged(object sender, EventArgs e)
             {
                 if (textBox2.Text.Length != 0)
                 {
-                    label4.Text = (int.Parse(textBox2.Text) * 100 + "");
+                    label4.Text = (int.Parse(textBox2.Text) * 65 + "");
+                    label12.Text = ("" + (int.Parse(label3.Text) + int.Parse(label4.Text) + int.Parse(label5.Text) + int.Parse(label6.Text) + int.Parse(label7.Text)));
                 }
                 else
                 {
                     label4.Text = "0";
+                    label12.Text = ("" + (int.Parse(label3.Text) + int.Parse(label4.Text) + int.Parse(label5.Text) + int.Parse(label6.Text) + int.Parse(label7.Text)));
                 }
 
 
@@ -300,11 +390,13 @@ private void textBox6_TextChanged(object sender, EventArgs e)
             {
                 if (textBox2.Text.Length != 0)
                 {
-                    label4.Text = (int.Parse(textBox2.Text) * 300 + "");
+                    label4.Text = (int.Parse(textBox2.Text) * 45 + "");
+                    label12.Text = ("" + (int.Parse(label3.Text) + int.Parse(label4.Text) + int.Parse(label5.Text) + int.Parse(label6.Text) + int.Parse(label7.Text)));
                 }
                 else
                 {
                     label4.Text = "0";
+                    label12.Text = ("" + (int.Parse(label3.Text) + int.Parse(label4.Text) + int.Parse(label5.Text) + int.Parse(label6.Text) + int.Parse(label7.Text)));
                 }
 
 
@@ -314,11 +406,13 @@ private void textBox6_TextChanged(object sender, EventArgs e)
             {
                 if (textBox2.Text.Length != 0)
                 {
-                    label4.Text = (int.Parse(textBox2.Text) * 150 + "");
+                    label4.Text = (int.Parse(textBox2.Text) * 40 + "");
+                    label12.Text = ("" + (int.Parse(label3.Text) + int.Parse(label4.Text) + int.Parse(label5.Text) + int.Parse(label6.Text) + int.Parse(label7.Text)));
                 }
                 else
                 {
                     label4.Text = "0";
+                    label12.Text = ("" + (int.Parse(label3.Text) + int.Parse(label4.Text) + int.Parse(label5.Text) + int.Parse(label6.Text) + int.Parse(label7.Text)));
                 }
 
 
@@ -328,11 +422,13 @@ private void textBox6_TextChanged(object sender, EventArgs e)
             {
                 if (textBox2.Text.Length != 0)
                 {
-                    label4.Text = (int.Parse(textBox2.Text) * 50 + "");
+                    label4.Text = (int.Parse(textBox2.Text) * 55 + "");
+                    label12.Text = ("" + (int.Parse(label3.Text) + int.Parse(label4.Text) + int.Parse(label5.Text) + int.Parse(label6.Text) + int.Parse(label7.Text)));
                 }
                 else
                 {
                     label4.Text = "0";
+                    label12.Text = ("" + (int.Parse(label3.Text) + int.Parse(label4.Text) + int.Parse(label5.Text) + int.Parse(label6.Text) + int.Parse(label7.Text)));
                 }
 
 
@@ -345,11 +441,13 @@ private void textBox6_TextChanged(object sender, EventArgs e)
             {
                 if (textBox3.Text.Length != 0)
                 {
-                    label5.Text = (int.Parse(textBox3.Text) * 10 + "");
+                    label5.Text = (int.Parse(textBox3.Text) * 50 + "");
+                    label12.Text = ("" + (int.Parse(label3.Text) + int.Parse(label4.Text) + int.Parse(label5.Text) + int.Parse(label6.Text) + int.Parse(label7.Text)));
                 }
                 else
                 {
                     label5.Text = "0";
+                    label12.Text = ("" + (int.Parse(label3.Text) + int.Parse(label4.Text) + int.Parse(label5.Text) + int.Parse(label6.Text) + int.Parse(label7.Text)));
                 }
 
             }
@@ -357,11 +455,13 @@ private void textBox6_TextChanged(object sender, EventArgs e)
             {
                 if (textBox3.Text.Length != 0)
                 {
-                    label5.Text = (int.Parse(textBox3.Text) * 100 + "");
+                    label5.Text = (int.Parse(textBox3.Text) * 65 + "");
+                    label12.Text = ("" + (int.Parse(label3.Text) + int.Parse(label4.Text) + int.Parse(label5.Text) + int.Parse(label6.Text) + int.Parse(label7.Text)));
                 }
                 else
                 {
                     label5.Text = "0";
+                    label12.Text = ("" + (int.Parse(label3.Text) + int.Parse(label4.Text) + int.Parse(label5.Text) + int.Parse(label6.Text) + int.Parse(label7.Text)));
                 }
 
 
@@ -371,11 +471,13 @@ private void textBox6_TextChanged(object sender, EventArgs e)
             {
                 if (textBox3.Text.Length != 0)
                 {
-                    label5.Text = (int.Parse(textBox3.Text) * 300 + "");
+                    label5.Text = (int.Parse(textBox3.Text) * 45 + "");
+                    label12.Text = ("" + (int.Parse(label3.Text) + int.Parse(label4.Text) + int.Parse(label5.Text) + int.Parse(label6.Text) + int.Parse(label7.Text)));
                 }
                 else
                 {
                     label5.Text = "0";
+                    label12.Text = ("" + (int.Parse(label3.Text) + int.Parse(label4.Text) + int.Parse(label5.Text) + int.Parse(label6.Text) + int.Parse(label7.Text)));
                 }
 
 
@@ -385,11 +487,13 @@ private void textBox6_TextChanged(object sender, EventArgs e)
             {
                 if (textBox3.Text.Length != 0)
                 {
-                    label5.Text = (int.Parse(textBox3.Text) * 150 + "");
+                    label5.Text = (int.Parse(textBox3.Text) * 40 + "");
+                    label12.Text = ("" + (int.Parse(label3.Text) + int.Parse(label4.Text) + int.Parse(label5.Text) + int.Parse(label6.Text) + int.Parse(label7.Text)));
                 }
                 else
                 {
                     label5.Text = "0";
+                    label12.Text = ("" + (int.Parse(label3.Text) + int.Parse(label4.Text) + int.Parse(label5.Text) + int.Parse(label6.Text) + int.Parse(label7.Text)));
                 }
 
 
@@ -399,11 +503,13 @@ private void textBox6_TextChanged(object sender, EventArgs e)
             {
                 if (textBox3.Text.Length != 0)
                 {
-                    label5.Text = (int.Parse(textBox3.Text) * 50 + "");
+                    label5.Text = (int.Parse(textBox3.Text) * 55 + "");
+                    label12.Text = ("" + (int.Parse(label3.Text) + int.Parse(label4.Text) + int.Parse(label5.Text) + int.Parse(label6.Text) + int.Parse(label7.Text)));
                 }
                 else
                 {
                     label5.Text = "0";
+                    label12.Text = ("" + (int.Parse(label3.Text) + int.Parse(label4.Text) + int.Parse(label5.Text) + int.Parse(label6.Text) + int.Parse(label7.Text)));
                 }
 
 
@@ -416,11 +522,13 @@ private void textBox6_TextChanged(object sender, EventArgs e)
             {
                 if (textBox3.Text.Length != 0)
                 {
-                    label5.Text = (int.Parse(textBox3.Text) * 10 + "");
+                    label5.Text = (int.Parse(textBox3.Text) * 50 + "");
+                    label12.Text = ("" + (int.Parse(label3.Text) + int.Parse(label4.Text) + int.Parse(label5.Text) + int.Parse(label6.Text) + int.Parse(label7.Text)));
                 }
                 else
                 {
                     label5.Text = "0";
+                    label12.Text = ("" + (int.Parse(label3.Text) + int.Parse(label4.Text) + int.Parse(label5.Text) + int.Parse(label6.Text) + int.Parse(label7.Text)));
                 }
 
             }
@@ -428,11 +536,13 @@ private void textBox6_TextChanged(object sender, EventArgs e)
             {
                 if (textBox3.Text.Length != 0)
                 {
-                    label5.Text = (int.Parse(textBox3.Text) * 100 + "");
+                    label5.Text = (int.Parse(textBox3.Text) * 65 + "");
+                    label12.Text = ("" + (int.Parse(label3.Text) + int.Parse(label4.Text) + int.Parse(label5.Text) + int.Parse(label6.Text) + int.Parse(label7.Text)));
                 }
                 else
                 {
                     label5.Text = "0";
+                    label12.Text = ("" + (int.Parse(label3.Text) + int.Parse(label4.Text) + int.Parse(label5.Text) + int.Parse(label6.Text) + int.Parse(label7.Text)));
                 }
 
 
@@ -442,11 +552,13 @@ private void textBox6_TextChanged(object sender, EventArgs e)
             {
                 if (textBox3.Text.Length != 0)
                 {
-                    label5.Text = (int.Parse(textBox3.Text) * 300 + "");
+                    label5.Text = (int.Parse(textBox3.Text) * 45 + "");
+                    label12.Text = ("" + (int.Parse(label3.Text) + int.Parse(label4.Text) + int.Parse(label5.Text) + int.Parse(label6.Text) + int.Parse(label7.Text)));
                 }
                 else
                 {
                     label5.Text = "0";
+                    label12.Text = ("" + (int.Parse(label3.Text) + int.Parse(label4.Text) + int.Parse(label5.Text) + int.Parse(label6.Text) + int.Parse(label7.Text)));
                 }
 
 
@@ -456,11 +568,13 @@ private void textBox6_TextChanged(object sender, EventArgs e)
             {
                 if (textBox3.Text.Length != 0)
                 {
-                    label5.Text = (int.Parse(textBox3.Text) * 150 + "");
+                    label5.Text = (int.Parse(textBox3.Text) * 40 + "");
+                    label12.Text = ("" + (int.Parse(label3.Text) + int.Parse(label4.Text) + int.Parse(label5.Text) + int.Parse(label6.Text) + int.Parse(label7.Text)));
                 }
                 else
                 {
                     label5.Text = "0";
+                    label12.Text = ("" + (int.Parse(label3.Text) + int.Parse(label4.Text) + int.Parse(label5.Text) + int.Parse(label6.Text) + int.Parse(label7.Text)));
                 }
 
 
@@ -470,11 +584,13 @@ private void textBox6_TextChanged(object sender, EventArgs e)
             {
                 if (textBox3.Text.Length != 0)
                 {
-                    label5.Text = (int.Parse(textBox3.Text) * 50 + "");
+                    label5.Text = (int.Parse(textBox3.Text) * 55 + "");
+                    label12.Text = ("" + (int.Parse(label3.Text) + int.Parse(label4.Text) + int.Parse(label5.Text) + int.Parse(label6.Text) + int.Parse(label7.Text)));
                 }
                 else
                 {
                     label5.Text = "0";
+                    label12.Text = ("" + (int.Parse(label3.Text) + int.Parse(label4.Text) + int.Parse(label5.Text) + int.Parse(label6.Text) + int.Parse(label7.Text)));
                 }
 
 
@@ -487,11 +603,13 @@ private void textBox6_TextChanged(object sender, EventArgs e)
             {
                 if (textBox4.Text.Length != 0)
                 {
-                    label6.Text = (int.Parse(textBox4.Text) * 10 + "");
+                    label6.Text = (int.Parse(textBox4.Text) * 50 + "");
+                    label12.Text = ("" + (int.Parse(label3.Text) + int.Parse(label4.Text) + int.Parse(label5.Text) + int.Parse(label6.Text) + int.Parse(label7.Text)));
                 }
                 else
                 {
                     label6.Text = "0";
+                    label12.Text = ("" + (int.Parse(label3.Text) + int.Parse(label4.Text) + int.Parse(label5.Text) + int.Parse(label6.Text) + int.Parse(label7.Text)));
                 }
 
             }
@@ -499,11 +617,13 @@ private void textBox6_TextChanged(object sender, EventArgs e)
             {
                 if (textBox4.Text.Length != 0)
                 {
-                    label6.Text = (int.Parse(textBox4.Text) * 100 + "");
+                    label6.Text = (int.Parse(textBox4.Text) * 65 + "");
+                    label12.Text = ("" + (int.Parse(label3.Text) + int.Parse(label4.Text) + int.Parse(label5.Text) + int.Parse(label6.Text) + int.Parse(label7.Text)));
                 }
                 else
                 {
                     label6.Text = "0";
+                    label12.Text = ("" + (int.Parse(label3.Text) + int.Parse(label4.Text) + int.Parse(label5.Text) + int.Parse(label6.Text) + int.Parse(label7.Text)));
                 }
 
 
@@ -513,11 +633,13 @@ private void textBox6_TextChanged(object sender, EventArgs e)
             {
                 if (textBox4.Text.Length != 0)
                 {
-                    label6.Text = (int.Parse(textBox4.Text) * 300 + "");
+                    label6.Text = (int.Parse(textBox4.Text) * 45 + "");
+                    label12.Text = ("" + (int.Parse(label3.Text) + int.Parse(label4.Text) + int.Parse(label5.Text) + int.Parse(label6.Text) + int.Parse(label7.Text)));
                 }
                 else
                 {
                     label6.Text = "0";
+                    label12.Text = ("" + (int.Parse(label3.Text) + int.Parse(label4.Text) + int.Parse(label5.Text) + int.Parse(label6.Text) + int.Parse(label7.Text)));
                 }
 
 
@@ -527,11 +649,13 @@ private void textBox6_TextChanged(object sender, EventArgs e)
             {
                 if (textBox4.Text.Length != 0)
                 {
-                    label6.Text = (int.Parse(textBox4.Text) * 150 + "");
+                    label6.Text = (int.Parse(textBox4.Text) * 40 + "");
+                    label12.Text = ("" + (int.Parse(label3.Text) + int.Parse(label4.Text) + int.Parse(label5.Text) + int.Parse(label6.Text) + int.Parse(label7.Text)));
                 }
                 else
                 {
                     label6.Text = "0";
+                    label12.Text = ("" + (int.Parse(label3.Text) + int.Parse(label4.Text) + int.Parse(label5.Text) + int.Parse(label6.Text) + int.Parse(label7.Text)));
                 }
 
 
@@ -541,11 +665,13 @@ private void textBox6_TextChanged(object sender, EventArgs e)
             {
                 if (textBox4.Text.Length != 0)
                 {
-                    label6.Text = (int.Parse(textBox4.Text) * 50 + "");
+                    label6.Text = (int.Parse(textBox4.Text) * 55 + "");
+                    label12.Text = ("" + (int.Parse(label3.Text) + int.Parse(label4.Text) + int.Parse(label5.Text) + int.Parse(label6.Text) + int.Parse(label7.Text)));
                 }
                 else
                 {
                     label6.Text = "0";
+                    label12.Text = ("" + (int.Parse(label3.Text) + int.Parse(label4.Text) + int.Parse(label5.Text) + int.Parse(label6.Text) + int.Parse(label7.Text)));
                 }
 
             }
@@ -557,11 +683,13 @@ private void textBox6_TextChanged(object sender, EventArgs e)
             {
                 if (textBox4.Text.Length != 0)
                 {
-                    label6.Text = (int.Parse(textBox4.Text) * 10 + "");
+                    label6.Text = (int.Parse(textBox4.Text) * 50 + "");
+                    label12.Text = ("" + (int.Parse(label3.Text) + int.Parse(label4.Text) + int.Parse(label5.Text) + int.Parse(label6.Text) + int.Parse(label7.Text)));
                 }
                 else
                 {
                     label6.Text = "0";
+                    label12.Text = ("" + (int.Parse(label3.Text) + int.Parse(label4.Text) + int.Parse(label5.Text) + int.Parse(label6.Text) + int.Parse(label7.Text)));
                 }
 
             }
@@ -569,11 +697,13 @@ private void textBox6_TextChanged(object sender, EventArgs e)
             {
                 if (textBox4.Text.Length != 0)
                 {
-                    label6.Text = (int.Parse(textBox4.Text) * 100 + "");
+                    label6.Text = (int.Parse(textBox4.Text) * 65 + "");
+                    label12.Text = ("" + (int.Parse(label3.Text) + int.Parse(label4.Text) + int.Parse(label5.Text) + int.Parse(label6.Text) + int.Parse(label7.Text)));
                 }
                 else
                 {
                     label6.Text = "0";
+                    label12.Text = ("" + (int.Parse(label3.Text) + int.Parse(label4.Text) + int.Parse(label5.Text) + int.Parse(label6.Text) + int.Parse(label7.Text)));
                 }
 
 
@@ -583,11 +713,13 @@ private void textBox6_TextChanged(object sender, EventArgs e)
             {
                 if (textBox4.Text.Length != 0)
                 {
-                    label6.Text = (int.Parse(textBox4.Text) * 300 + "");
+                    label6.Text = (int.Parse(textBox4.Text) * 45 + "");
+                    label12.Text = ("" + (int.Parse(label3.Text) + int.Parse(label4.Text) + int.Parse(label5.Text) + int.Parse(label6.Text) + int.Parse(label7.Text)));
                 }
                 else
                 {
                     label6.Text = "0";
+                    label12.Text = ("" + (int.Parse(label3.Text) + int.Parse(label4.Text) + int.Parse(label5.Text) + int.Parse(label6.Text) + int.Parse(label7.Text)));
                 }
 
 
@@ -597,11 +729,13 @@ private void textBox6_TextChanged(object sender, EventArgs e)
             {
                 if (textBox4.Text.Length != 0)
                 {
-                    label6.Text = (int.Parse(textBox4.Text) * 150 + "");
+                    label6.Text = (int.Parse(textBox4.Text) * 40 + "");
+                    label12.Text = ("" + (int.Parse(label3.Text) + int.Parse(label4.Text) + int.Parse(label5.Text) + int.Parse(label6.Text) + int.Parse(label7.Text)));
                 }
                 else
                 {
                     label6.Text = "0";
+                    label12.Text = ("" + (int.Parse(label3.Text) + int.Parse(label4.Text) + int.Parse(label5.Text) + int.Parse(label6.Text) + int.Parse(label7.Text)));
                 }
 
 
@@ -611,11 +745,13 @@ private void textBox6_TextChanged(object sender, EventArgs e)
             {
                 if (textBox4.Text.Length != 0)
                 {
-                    label6.Text = (int.Parse(textBox4.Text) * 50 + "");
+                    label6.Text = (int.Parse(textBox4.Text) * 55 + "");
+                    label12.Text = ("" + (int.Parse(label3.Text) + int.Parse(label4.Text) + int.Parse(label5.Text) + int.Parse(label6.Text) + int.Parse(label7.Text)));
                 }
                 else
                 {
                     label6.Text = "0";
+                    label12.Text = ("" + (int.Parse(label3.Text) + int.Parse(label4.Text) + int.Parse(label5.Text) + int.Parse(label6.Text) + int.Parse(label7.Text)));
                 }
 
             }
@@ -627,11 +763,13 @@ private void textBox6_TextChanged(object sender, EventArgs e)
             {
                 if (textBox5.Text.Length != 0)
                 {
-                    label7.Text = (int.Parse(textBox5.Text) * 10 + "");
+                    label7.Text = (int.Parse(textBox5.Text) * 50 + "");
+                    label12.Text = ("" + (int.Parse(label3.Text) + int.Parse(label4.Text) + int.Parse(label5.Text) + int.Parse(label6.Text) + int.Parse(label7.Text)));
                 }
                 else
                 {
                     label7.Text = "0";
+                    label12.Text = ("" + (int.Parse(label3.Text) + int.Parse(label4.Text) + int.Parse(label5.Text) + int.Parse(label6.Text) + int.Parse(label7.Text)));
                 }
 
             }
@@ -639,11 +777,13 @@ private void textBox6_TextChanged(object sender, EventArgs e)
             {
                 if (textBox5.Text.Length != 0)
                 {
-                    label7.Text = (int.Parse(textBox5.Text) * 100 + "");
+                    label7.Text = (int.Parse(textBox5.Text) * 65 + "");
+                    label12.Text = ("" + (int.Parse(label3.Text) + int.Parse(label4.Text) + int.Parse(label5.Text) + int.Parse(label6.Text) + int.Parse(label7.Text)));
                 }
                 else
                 {
                     label7.Text = "0";
+                    label12.Text = ("" + (int.Parse(label3.Text) + int.Parse(label4.Text) + int.Parse(label5.Text) + int.Parse(label6.Text) + int.Parse(label7.Text)));
                 }
             }
 
@@ -651,11 +791,13 @@ private void textBox6_TextChanged(object sender, EventArgs e)
             {
                 if (textBox5.Text.Length != 0)
                 {
-                    label7.Text = (int.Parse(textBox5.Text) * 300 + "");
+                    label7.Text = (int.Parse(textBox5.Text) * 45 + "");
+                    label12.Text = ("" + (int.Parse(label3.Text) + int.Parse(label4.Text) + int.Parse(label5.Text) + int.Parse(label6.Text) + int.Parse(label7.Text)));
                 }
                 else
                 {
                     label7.Text = "0";
+                    label12.Text = ("" + (int.Parse(label3.Text) + int.Parse(label4.Text) + int.Parse(label5.Text) + int.Parse(label6.Text) + int.Parse(label7.Text)));
                 }
             }
 
@@ -663,11 +805,13 @@ private void textBox6_TextChanged(object sender, EventArgs e)
             {
                 if (textBox5.Text.Length != 0)
                 {
-                    label7.Text = (int.Parse(textBox5.Text) * 150 + "");
+                    label7.Text = (int.Parse(textBox5.Text) * 40 + "");
+                    label12.Text = ("" + (int.Parse(label3.Text) + int.Parse(label4.Text) + int.Parse(label5.Text) + int.Parse(label6.Text) + int.Parse(label7.Text)));
                 }
                 else
                 {
                     label7.Text = "0";
+                    label12.Text = ("" + (int.Parse(label3.Text) + int.Parse(label4.Text) + int.Parse(label5.Text) + int.Parse(label6.Text) + int.Parse(label7.Text)));
                 }
             }
 
@@ -675,11 +819,13 @@ private void textBox6_TextChanged(object sender, EventArgs e)
             {
                 if (textBox5.Text.Length != 0)
                 {
-                    label7.Text = (int.Parse(textBox5.Text) * 50 + "");
+                    label7.Text = (int.Parse(textBox5.Text) * 55 + "");
+                    label12.Text = ("" + (int.Parse(label3.Text) + int.Parse(label4.Text) + int.Parse(label5.Text) + int.Parse(label6.Text) + int.Parse(label7.Text)));
                 }
                 else
                 {
                     label7.Text = "0";
+                    label12.Text = ("" + (int.Parse(label3.Text) + int.Parse(label4.Text) + int.Parse(label5.Text) + int.Parse(label6.Text) + int.Parse(label7.Text)));
                 }
             }
         }
@@ -690,11 +836,13 @@ private void textBox6_TextChanged(object sender, EventArgs e)
             {
                 if (textBox5.Text.Length != 0)
                 {
-                    label7.Text = (int.Parse(textBox5.Text) * 10 + "");
+                    label7.Text = (int.Parse(textBox5.Text) * 50 + "");
+                    label12.Text = ("" + (int.Parse(label3.Text) + int.Parse(label4.Text) + int.Parse(label5.Text) + int.Parse(label6.Text) + int.Parse(label7.Text)));
                 }
                 else
                 {
                     label7.Text = "0";
+                    label12.Text = ("" + (int.Parse(label3.Text) + int.Parse(label4.Text) + int.Parse(label5.Text) + int.Parse(label6.Text) + int.Parse(label7.Text)));
                 }
 
             }
@@ -702,11 +850,13 @@ private void textBox6_TextChanged(object sender, EventArgs e)
             {
                 if (textBox5.Text.Length != 0)
                 {
-                    label7.Text = (int.Parse(textBox5.Text) * 100 + "");
+                    label7.Text = (int.Parse(textBox5.Text) * 65 + "");
+                    label12.Text = ("" + (int.Parse(label3.Text) + int.Parse(label4.Text) + int.Parse(label5.Text) + int.Parse(label6.Text) + int.Parse(label7.Text)));
                 }
                 else
                 {
                     label7.Text = "0";
+                    label12.Text = ("" + (int.Parse(label3.Text) + int.Parse(label4.Text) + int.Parse(label5.Text) + int.Parse(label6.Text) + int.Parse(label7.Text)));
                 }
             }
 
@@ -714,11 +864,13 @@ private void textBox6_TextChanged(object sender, EventArgs e)
             {
                 if (textBox5.Text.Length != 0)
                 {
-                    label7.Text = (int.Parse(textBox5.Text) * 300 + "");
+                    label7.Text = (int.Parse(textBox5.Text) * 45 + "");
+                    label12.Text = ("" + (int.Parse(label3.Text) + int.Parse(label4.Text) + int.Parse(label5.Text) + int.Parse(label6.Text) + int.Parse(label7.Text)));
                 }
                 else
                 {
                     label7.Text = "0";
+                    label12.Text = ("" + (int.Parse(label3.Text) + int.Parse(label4.Text) + int.Parse(label5.Text) + int.Parse(label6.Text) + int.Parse(label7.Text)));
                 }
             }
 
@@ -726,11 +878,13 @@ private void textBox6_TextChanged(object sender, EventArgs e)
             {
                 if (textBox5.Text.Length != 0)
                 {
-                    label7.Text = (int.Parse(textBox5.Text) * 150 + "");
+                    label7.Text = (int.Parse(textBox5.Text) * 40 + "");
+                    label12.Text = ("" + (int.Parse(label3.Text) + int.Parse(label4.Text) + int.Parse(label5.Text) + int.Parse(label6.Text) + int.Parse(label7.Text)));
                 }
                 else
                 {
                     label7.Text = "0";
+                    label12.Text = ("" + (int.Parse(label3.Text) + int.Parse(label4.Text) + int.Parse(label5.Text) + int.Parse(label6.Text) + int.Parse(label7.Text)));
                 }
             }
 
@@ -738,11 +892,13 @@ private void textBox6_TextChanged(object sender, EventArgs e)
             {
                 if (textBox5.Text.Length != 0)
                 {
-                    label7.Text = (int.Parse(textBox5.Text) * 50 + "");
+                    label7.Text = (int.Parse(textBox5.Text) * 55 + "");
+                    label12.Text = ("" + (int.Parse(label3.Text) + int.Parse(label4.Text) + int.Parse(label5.Text) + int.Parse(label6.Text) + int.Parse(label7.Text)));
                 }
                 else
                 {
                     label7.Text = "0";
+                    label12.Text = ("" + (int.Parse(label3.Text) + int.Parse(label4.Text) + int.Parse(label5.Text) + int.Parse(label6.Text) + int.Parse(label7.Text)));
                 }
             }
         }
@@ -751,6 +907,13 @@ private void textBox6_TextChanged(object sender, EventArgs e)
         {
             
           
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            this.Hide();
+            Form1 f1 = new Form1();
+            f1.ShowDialog();
         }
     }
 }
